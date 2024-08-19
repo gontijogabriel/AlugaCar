@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from cars.models import Images, Cars
 
+from rental.serializers import RentalSerializer
+
 
 class ImagesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,10 +27,11 @@ class CarsSerializer(serializers.ModelSerializer):
 
 class CarsDetailSerializer(serializers.ModelSerializer):
     images = ImagesSerializer(many=True, required=False)
+    rental = RentalSerializer(many=True, read_only=True)
 
     class Meta:
         model = Cars
-        fields = ['id', 'model', 'brand', 'type', 'category', 'description', 'status', 'day_price', 'seats', 'odometer', 'images']
+        fields = ['id', 'model', 'brand', 'type', 'category', 'description', 'status', 'day_price', 'seats', 'odometer', 'rental', 'images']
 
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
