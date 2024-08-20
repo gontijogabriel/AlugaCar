@@ -27,11 +27,11 @@ class CarsSerializer(serializers.ModelSerializer):
 
 class CarsDetailSerializer(serializers.ModelSerializer):
     images = ImagesSerializer(many=True, required=False)
-    rental = RentalSerializer(many=True, read_only=True)
+    rentals = RentalSerializer(many=True, read_only=True)  # Add this line
 
     class Meta:
         model = Cars
-        fields = ['id', 'model', 'brand', 'type', 'category', 'description', 'status', 'day_price', 'seats', 'odometer', 'rental', 'images']
+        fields = ['id', 'model', 'brand', 'type', 'category', 'description', 'status', 'day_price', 'seats', 'odometer', 'images', 'rentals']
 
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
@@ -42,25 +42,3 @@ class CarsDetailSerializer(serializers.ModelSerializer):
             car.images.add(image)
         
         return car
-
-    def update(self, instance, validated_data):
-        images_data = validated_data.pop('images', [])
-        
-        instance.model = validated_data.get('model', instance.model)
-        instance.brand = validated_data.get('brand', instance.brand)
-        instance.type = validated_data.get('type', instance.type)
-        instance.category = validated_data.get('category', instance.category)
-        instance.description = validated_data.get('description', instance.description)
-        instance.status = validated_data.get('status', instance.status)
-        instance.day_price = validated_data.get('day_price', instance.day_price)
-        instance.seats = validated_data.get('seats', instance.seats)
-        instance.odometer = validated_data.get('odometer', instance.odometer)
-        instance.save()
-
-        if images_data:
-            instance.images.clear()
-            for image_data in images_data:
-                image = Images.objects.create(**image_data)
-                instance.images.add(image)
-
-        return instance
