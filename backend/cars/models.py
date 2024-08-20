@@ -36,7 +36,6 @@ class Cars(models.Model):
         ('VAN', 'Van'),
     ]
 
-    # uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     model = models.CharField(max_length=150, blank=False, null=False)
     brand = models.CharField(max_length=150, blank=False, null=False)
     type = models.CharField(max_length=50, choices=CAR_TYPES, blank=False, null=False)

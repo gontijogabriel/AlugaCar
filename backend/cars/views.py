@@ -38,10 +38,11 @@ class SimilarCarsView(generics.ListAPIView):
     serializer_class = CarsSerializer
 
     def get_queryset(self):
+        carPage = self.kwargs.get('carPage')
         type = self.kwargs.get('type')
 
-        if type:
-            return Cars.objects.filter(type=type.upper())[:4]
+        if type and carPage:
+            return Cars.objects.filter(type=type.upper()).exclude(id=carPage)[:4]
         else:
             return Cars.objects.none()
 
