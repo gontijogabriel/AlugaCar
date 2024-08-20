@@ -21,7 +21,7 @@ class Rental(BaseModel):
     start_date = models.DateField(blank=False, null=False)
     end_date = models.DateField(blank=False, null=False)
     value = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='AWAITING_PAYMENT')
+    status = models.CharField(max_length=20, default='AWAITING_PAYMENT')
     odometer_last = models.IntegerField()
 
     class Meta:
