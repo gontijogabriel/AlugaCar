@@ -1,14 +1,16 @@
-import "./globals.css";
+'use client'
 
-export const metadata = {
-  title: "AlugaCar",
-};
+import NextAuthSessionProvider from '@/providers/sessionProvider';
+import './globals.css';
+
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        {children}
+        <NextAuthSessionProvider>
+          {children}
+        </NextAuthSessionProvider>
       </body>
     </html>
   );
