@@ -17,8 +17,8 @@ const nextAuthOptions = {
                         'Content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                        email: credentials?.email,
-                        password: credentials?.password
+                        email: credentials.email,
+                        password: credentials.password
                     })
                 });
 
