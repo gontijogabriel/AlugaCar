@@ -57,7 +57,6 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-10">
           <div className="fixed inset-0 bg-gray-500/75" onClick={() => setMobileMenuOpen(false)} />
