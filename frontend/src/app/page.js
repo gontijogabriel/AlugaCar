@@ -3,6 +3,7 @@
 import Header from '@/components/Header';
 import Loading from '@/components/Loading';
 import { useEffect, useState } from 'react';
+import { getCars } from '@/services/api';
 
 
 export default function Home() {
@@ -12,8 +13,7 @@ export default function Home() {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/cars/');
-        const data = await response.json();
+        const data = await getCars()
         setCars(data);
       } catch (error) {
         console.error("Erro ao buscar os carros:", error);
