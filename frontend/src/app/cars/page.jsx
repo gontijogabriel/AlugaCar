@@ -3,16 +3,31 @@
 import Header from '@/components/Header';
 import Loading from '@/components/Loading';
 import { useEffect, useState } from 'react';
-import { getCars } from '@/services/api';
+import { getCarDataFilters, getCars } from '@/services/api';
+import Filter from '@/components/Filter';
 
 const Cars = () => {
+  const [filter, setFilter] = useState({ categories: [], types: [] });
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchFilter = async () => {
+      try {
+        const data = await getCarDataFilters();
+        setFilter(data);
+      } catch (error) {
+        console.error("Erro ao buscar filtros dos carros:", error);
+      }
+    };
+
+    fetchFilter();
+  }, []);
+
+  useEffect(() => {
     const fetchCars = async () => {
       try {
-        const data = await getCars()
+        const data = await getCars();
         setCars(data);
       } catch (error) {
         console.error("Erro ao buscar os carros:", error);
@@ -32,17 +47,34 @@ const Cars = () => {
     <>
       <Header />
       <main className="container mx-auto px-4 lg:px-8 py-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {cars.map((car) => (
-            <a href={`cars/${car.id}`} key={car.id} className="block border border-gray-300 rounded-md overflow-hidden shadow-md transition-transform transform hover:scale-105 bg-white">
-              <img src={car.image.url} alt={car.model} className="w-full h-40 object-cover" />
-              <div className="p-4">
-                <p className="text-lg font-semibold mb-2">{car.model}</p>
-                <p className="text-gray-600 mb-1">{car.brand}</p>
-                <p className="text-gray-600">R$ {car.day_price} / dia</p>
-              </div>
-            </a>
-          ))}
+        <div className="flex flex-col lg:flex-row gap-6">
+
+          <Filter categories={filter.categories} types={filter.types} />
+          
+          <div className="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+            {cars.length > 0 ? (
+              cars.map((car) => (
+                <a
+                  href={`cars/${car.id}`}
+                  key={car.id}
+                  className="block border border-gray-300 rounded-md overflow-hidden shadow-md transition-transform transform hover:scale-105 bg-white"
+                >
+                  <img
+                    src={car.image.url}
+                    alt={car.model}
+                    className="w-full h-40 object-cover"
+                  />
+                  <div className="p-4">
+                    <p className="text-lg font-semibold mb-2">{car.model}</p>
+                    <p className="text-gray-600 mb-1">{car.brand}</p>
+                    <p className="text-gray-600">R$ {car.day_price} / dia</p>
+                  </div>
+                </a>
+              ))
+            ) : (
+              <p className="text-center col-span-full">Nenhum carro disponível no momento.</p>
+            )}
+          </div>
         </div>
       </main>
     </>
