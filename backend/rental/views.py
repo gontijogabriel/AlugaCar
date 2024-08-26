@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
 
-from rental.serializers import RentalSerializer, RentalDetailSerializer, RentalUserAuthList
+from rental.serializers import RentalSerializer, RentalDetailSerializer, RentalUserAuthListSerializer
 from rental.models import Rental
 
 
@@ -27,9 +27,9 @@ class RentalListCreateView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user, value=total_value)
         
 
-class RentalAuthUserListView(generics.ListCreateAPIView):
+class RentalUserListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = RentalUserAuthList
+    serializer_class = RentalUserAuthListSerializer
 
     def get_queryset(self):
         return Rental.objects.filter(user=self.request.user)

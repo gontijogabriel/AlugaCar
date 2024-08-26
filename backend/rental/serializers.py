@@ -31,9 +31,14 @@ class RentalDetailSerializer(serializers.ModelSerializer):
         return value
 
 
-class RentalUserAuthList(serializers.ModelSerializer):
+class RentalUserAuthListSerializer(serializers.ModelSerializer):
     permission_classes = [permissions.IsAuthenticated]
 
     class Meta:
         model = Rental
         fields = '__all__'
+
+    def to_representation(self, instance):
+        from cars.serializers import CarsSerializer
+        self.fields['car'] = CarsSerializer()
+        return super(RentalUserAuthListSerializer, self).to_representation(instance)

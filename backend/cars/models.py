@@ -2,8 +2,6 @@ from django.db import models
 
 from core.models import BaseModel
 
-import uuid 
-
 
 class Images(BaseModel):
     url = models.URLField()

@@ -16,7 +16,7 @@ class CarsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cars
-        fields = ['id', 'model', 'day_price', 'image']
+        fields = ['id', 'model', 'day_price', 'brand', 'type', 'category', 'status', 'image']
 
     def get_image(self, obj):
         first_image = obj.images.first()
@@ -27,18 +27,14 @@ class CarsSerializer(serializers.ModelSerializer):
 
 class CarsDetailSerializer(serializers.ModelSerializer):
     images = ImagesSerializer(many=True, required=False)
-    rentals = RentalSerializer(many=True, read_only=True)  # Add this line
+    rentals = RentalSerializer(many=True, read_only=True)
+    similars = serializers.SerializerMethodField()
 
     class Meta:
         model = Cars
-        fields = ['id', 'model', 'brand', 'type', 'category', 'description', 'status', 'day_price', 'seats', 'odometer', 'images', 'rentals']
+        fields = ['id', 'model', 'brand', 'type', 'category', 'description', 'status', 'day_price', 'seats', 'odometer', 'images', 'similars', 'rentals']
 
-    def create(self, validated_data):
-        images_data = validated_data.pop('images', [])
-        car = Cars.objects.create(**validated_data)
-        
-        for image_data in images_data:
-            image = Images.objects.create(**image_data)
-            car.images.add(image)
-        
-        return car
+
+    def get_similars(self, obj):
+        similars = Cars.objects.filter(type=obj.type).exclude(id=obj.id)[:4]
+        return CarsSerializer(similars, many=True).data
