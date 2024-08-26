@@ -25,4 +25,13 @@ export const getDetailCar = async (carId) => {
     }
 };
 
+export const getCarDataFilters = async () => {
+    try {
+        const response = await api.get(`/api/v1/cars/filter`);
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao buscar dados do filtro dos carros:', error);
+        throw error;
+    }
+};
 
