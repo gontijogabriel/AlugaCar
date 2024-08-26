@@ -22,9 +22,9 @@ const Login = () => {
       password: formData.password,
     });
 
-    if (res?.error) {
+    if (res.error) {
       setError(res.error);
-    } else if (res?.ok) {
+    } else if (res.ok) {
       router.replace('/')
     }
 

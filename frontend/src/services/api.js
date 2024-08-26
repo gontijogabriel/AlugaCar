@@ -4,8 +4,6 @@ const api = axios.create({
     baseURL: 'http://127.0.0.1:8000',
 });
 
-// User
-
 // Cars
 export const getCars = async () => {
     try {
@@ -17,5 +15,14 @@ export const getCars = async () => {
     }
 };
 
-// Rental
+export const getDetailCar = async (carId) => {
+    try {
+        const response = await api.get(`/api/v1/cars/${carId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao buscar cars:', error);
+        throw error;
+    }
+};
+
 

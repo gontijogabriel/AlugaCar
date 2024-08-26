@@ -4,23 +4,20 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import axios from 'axios';
 import Header from '@/components/Header';
 import Loading from '@/components/Loading';
+import { getDetailCar } from '@/services/api';
 
 const useCarDetails = (carId) => {
     const [carDetails, setCarDetails] = useState(null);
-    const [similarCars, setSimilarCars] = useState([]);
-
 
     useEffect(() => {
         const fetchDetails = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8000/api/v1/cars/${carId}/`);
-                setCarDetails(response.data);
 
-                const similarResponse = await axios.get(`http://localhost:8000/api/v1/cars/similar/${carId}/${response.data.type}/`);
-                setSimilarCars(similarResponse.data);
+            try {
+                const data = await getDetailCar(carId);
+                setCarDetails(data);
+
             } catch (error) {
                 console.error('Error fetching car details or similar cars:', error);
             }
@@ -29,12 +26,12 @@ const useCarDetails = (carId) => {
         fetchDetails();
     }, [carId]);
 
-    return { carDetails, similarCars };
+    return { carDetails };
 };
 
 const CarDetailsPage = ({ params }) => {
     const { carId } = params;
-    const { carDetails, similarCars } = useCarDetails(carId);
+    const { carDetails } = useCarDetails(carId);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [totalRent, setTotalRent] = useState(0);
@@ -104,6 +101,7 @@ const CarDetailsPage = ({ params }) => {
         <Loading />
     );
     
+    const similarCars = carDetails.similars
 
     return (
         <>
