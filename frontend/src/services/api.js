@@ -1,26 +1,31 @@
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
+const api_url = process.env.NEXT_PUBLIC_API_BASEURL;
 
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000',
+    baseURL: api_url,
 });
-
 
 const createAuthApi = () => {
     const { data: session } = useSession();
     return axios.create({
-        baseURL: 'http://127.0.0.1:8000',
+        baseURL: api_url,
         headers: {
-            Authorization: `Bearer ${session.user.access || ''}`,
+            Authorization: `Bearer ${session?.user?.access}`,
         },
     });
 };
 
-
-export const getCars = async () => {
+export const getCars = async (query) => {
     try {
-        const response = await api.get('/api/v1/cars');
+        let response;
+        if (query === undefined || Object.keys(query).length === 0) {
+            response = await api.get(`/api/v1/cars/`);
+        } else {
+            const queryString = new URLSearchParams(query).toString();
+            response = await api.get(`/api/v1/cars/?${queryString}`);
+        }
         return response.data;
     } catch (error) {
         console.error('Erro ao buscar carros:', error);
@@ -28,7 +33,9 @@ export const getCars = async () => {
     }
 };
 
+
 export const getDetailCar = async (carId) => {
+    console.log(carId)
     try {
         const response = await api.get(`/api/v1/cars/${carId}`);
         return response.data;
@@ -48,11 +55,27 @@ export const getCarDataFilters = async () => {
     }
 };
 
+// export const authUser = async (email, password) => {
+//     try {
+//         const response = await axios.post('/auth/token', {
+//             email: email,
+//             password: password
+//         }, {
+//             headers: {
+//                 'Content-type': 'application/json'
+//             }
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error('Erro ao autenticar o usuário:', error);
+//         throw error;
+//     }
+// };
 
 export const getRentalUser = async () => {
     try {
         const authApi = createAuthApi();
-        const response = await authApi.get('/api/v1/rental/auth-user/');
+        const response = await authApi.get('/api/v1/rental/auth-user');
         return response.data;
     } catch (error) {
         console.error('Erro ao buscar rentals do usuário:', error);

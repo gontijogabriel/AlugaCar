@@ -10,8 +10,8 @@ const nextAuthOptions = {
                 password: { label: 'password', type: 'password' }
             },
 
-            async authorize(credentials, req) {
-                const response = await fetch('http://localhost:8000/auth/token/', {
+            async authorize(credentials) {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASEURL}/auth/token/`, {
                     method: 'POST',
                     headers: {
                         'Content-type': 'application/json'
