@@ -1,4 +1,5 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from datetime import datetime
 
 
 class TokenPairSerializer(TokenObtainPairSerializer):
@@ -15,5 +16,7 @@ class TokenPairSerializer(TokenObtainPairSerializer):
         for key, value in user_data.items():
             data[key] = value
 
+
+        print(f'aaaa: {data}')
         return data
 
