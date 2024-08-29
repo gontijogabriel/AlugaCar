@@ -7,6 +7,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Header from '@/components/Header';
 import Loading from '@/components/Loading';
 import { getDetailCar } from '@/services/api';
+import CarSimpleCard from '@/components/CarSimpleCard';
 
 const useCarDetails = (carId) => {
     const [carDetails, setCarDetails] = useState(null);
@@ -105,7 +106,6 @@ const CarDetailsPage = ({ params }) => {
 
     return (
         <>
-            <Header />
             <main className="container mx-auto px-4 lg:px-8 py-6">
                 <h1 className="text-4xl font-bold mb-4 text-gray-800">{carDetails.model}</h1>
                 <div className="flex flex-col lg:flex-row gap-6">
@@ -178,14 +178,7 @@ const CarDetailsPage = ({ params }) => {
                     <h2 className="text-2xl font-bold mb-4 text-gray-800">Carros Semelhantes</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {similarCars.map((car) => (
-                            <a href={`${car.id}`} key={car.id} className="block border border-gray-300 rounded-md overflow-hidden shadow-md transition-transform transform hover:scale-105 bg-white">
-                                <img src={car.image.url} alt={car.model} className="w-full h-40 object-cover" />
-                                <div className="p-4">
-                                    <p className="text-lg font-semibold mb-2">{car.model}</p>
-                                    <p className="text-gray-600 mb-1">{car.brand}</p>
-                                    <p className="text-gray-600">R$ {car.day_price} / dia</p>
-                                </div>
-                            </a>
+                            <CarSimpleCard car={car} />
                         ))}
                     </div>
                 </div>
