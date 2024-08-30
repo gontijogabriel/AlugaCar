@@ -84,12 +84,10 @@ const Cars = () => {
   }
 
   return (
-    <>
       <main className="container mx-auto px-4 lg:px-8 py-6">
-        {/* Filtros na parte superior */}
-        <div className="flex flex-wrap gap-4 mb-6 justify-end">
-          {/* Barra de pesquisa */}
-          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+        
+        <section className="flex flex-wrap gap-4 mb-6 justify-end">
+          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 w-full sm:w-auto">
             <input
               type="text"
               className="text-sm font-medium outline-none w-full"
@@ -98,78 +96,84 @@ const Cars = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <span className="ml-2 cursor-pointer" onClick={handleSearch}>
-              <IoIosSearch />
+              <IoIosSearch color='grey' />
             </span>
           </div>
 
-          {/* Filtro por Categoria */}
-          <details className="relative flex items-center border border-gray-300 rounded-md p-2 cursor-pointer">
-            <summary className="flex items-center gap-2">
-              <span className="text-sm font-medium">Categoria</span>
-              <IoIosArrowForward className="transition-transform rotate-0 group-open:rotate-90" />
-            </summary>
-            <div className="absolute left-0 top-10 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
-              <ul className="space-y-1">
-                {filter.categories.map((categ, index) => (
-                  <li key={index}>
-                    <label className="inline-flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300"
-                        onChange={() => handleCheckboxChange('category', categ.name)}
-                        checked={searchParams.get('category')?.split(',').includes(categ.name) || false}
-                      />
-                      <span className="text-sm font-medium text-gray-700">
-                        {`${categ.name} (${categ.count})`}
-                      </span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </details>
+          <div className='flex flex-wrap gap-4 w-full sm:w-auto justify-center sm:justify-end'>
+            <details className="relative flex items-center border border-gray-300 rounded-md p-2 cursor-pointer w-full sm:w-auto">
+              <summary className="flex items-center gap-2 w-full sm:w-auto">
+                <span className="text-sm font-medium">Categoria</span>
+                <IoIosArrowForward className="transition-transform rotate-0 group-open:rotate-90" />
+              </summary>
+              <div className="absolute left-0 top-10 mt-2 w-full sm:w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
+                <ul className="space-y-1">
+                  {filter.categories.map((categ, index) => (
+                    <li key={index}>
+                      <label className="inline-flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300"
+                          onChange={() => handleCheckboxChange('category', categ.name)}
+                          checked={searchParams.get('category')?.split(',').includes(categ.name) || false}
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {`${categ.name} (${categ.count})`}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
 
-          {/* Filtro por Tipo de Carro */}
-          <details className="relative flex items-center border border-gray-300 rounded-md p-2 cursor-pointer">
-            <summary className="flex items-center gap-2">
-              <span className="text-sm font-medium">Carroceria</span>
-              <IoIosArrowForward className="transition-transform rotate-0 group-open:rotate-90" />
-            </summary>
-            <div className="absolute left-0 top-10 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
-              <ul className="space-y-1">
-                {filter.types.map((tp, index) => (
-                  <li key={index}>
-                    <label className="inline-flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300"
-                        onChange={() => handleCheckboxChange('type', tp.name)}
-                        checked={searchParams.get('type')?.split(',').includes(tp.name) || false}
-                      />
-                      <span className="text-sm font-medium text-gray-700">
-                        {`${tp.name} (${tp.count})`}
-                      </span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </details>
-        </div>
+            <details className="relative flex items-center border border-gray-300 rounded-md p-2 cursor-pointer w-full sm:w-auto">
+              <summary className="flex items-center gap-2 w-full sm:w-auto">
+                <span className="text-sm font-medium">Carroceria</span>
+                <IoIosArrowForward className="transition-transform rotate-0 group-open:rotate-90" />
+              </summary>
+              <div className="absolute left-0 top-10 mt-2 w-full sm:w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
+                <ul className="space-y-1">
+                  {filter.types.map((tp, index) => (
+                    <li key={index}>
+                      <label className="inline-flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300"
+                          onChange={() => handleCheckboxChange('type', tp.name)}
+                          checked={searchParams.get('type')?.split(',').includes(tp.name) || false}
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {`${tp.name} (${tp.count})`}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+          </div>
+        </section>
 
-        {/* Cards de Carros */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
           {cars.length > 0 ? (
             cars.map((car, index) => (
               <CarSimpleCard key={index} car={car} />
             ))
           ) : (
-            <p className="text-center col-span-full">Nenhum carro disponível no momento.</p>
+            <p className="text-center col-span-full text-gray-500 italic font-semibold mt-4 p-4">
+              Nenhum carro disponível no momento.
+            </p>
           )}
+        </section>
+        
+        <div className='text-right'>
+          <span className="text-xs text-gray-600 text-right">
+            Resultados encontrados {totalResults}
+          </span>
         </div>
 
-        {/* Paginação */}
-        <nav className="mt-6">
+        <nav className="mt-2">
           <ol className="flex justify-center gap-1 text-xs font-medium">
             <li>
               <a
@@ -225,8 +229,8 @@ const Cars = () => {
             </li>
           </ol>
         </nav>
+
       </main>
-    </>
   );
 };
 
