@@ -1,13 +1,10 @@
 'use client';
 
-import Header from '@/components/Header';
 import Loading from '@/components/Loading';
 import { useEffect, useState } from 'react';
 import { getCarDataFilters, getCars } from '@/services/api';
-
 import { useSearchParams, useRouter } from 'next/navigation';
 import { IoIosArrowForward, IoIosSearch } from 'react-icons/io';
-import Footer from '@/components/Footer';
 import CarSimpleCard from '@/components/CarSimpleCard';
 
 const Cars = () => {
@@ -18,6 +15,8 @@ const Cars = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedType, setSelectedType] = useState('');
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -53,32 +52,21 @@ const Cars = () => {
     fetchCars();
   }, [searchParams, currentPage]);
 
-  const handleCheckboxChange = (type, value) => {
-    const params = new URLSearchParams(searchParams);
-
-    let selectedFilters = params.get(type) ? params.get(type).split(',') : [];
-    if (selectedFilters.includes(value)) {
-      selectedFilters = selectedFilters.filter((item) => item !== value);
-    } else {
-      selectedFilters.push(value);
-    }
-
-    if (selectedFilters.length) {
-      params.set(type, selectedFilters.join(','));
-    } else {
-      params.delete(type);
-    }
-
-    router.push(`?${params.toString()}`);
-  };
-
   const handleSearch = () => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams();
+
     if (searchTerm) {
       params.set('search', searchTerm);
-    } else {
-      params.delete('search');
     }
+
+    if (selectedCategory) {
+      params.set('category', selectedCategory);
+    }
+
+    if (selectedType) {
+      params.set('type', selectedType);
+    }
+
     router.push(`?${params.toString()}`);
   };
 
@@ -87,162 +75,89 @@ const Cars = () => {
   }
 
   return (
-    <>
-      <main className="container mx-auto px-4 lg:px-8 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-1/4 lg:max-w-56">
-            <div className="block rounded-md overflow-hidden">
-              <div className="space-y-2">
-
-                <details className="overflow-hidden rounded border border-gray-300">
-                  <summary className="flex items-center justify-between gap-2 p-4 text-gray-900 transition">
-                    <input 
-                      type="text" 
-                      className="text-sm font-medium outline-none" 
-                      placeholder="Pesquisar"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <span className="transition group-open:-rotate-180 cursor-pointer" onClick={handleSearch}>
-                      <IoIosSearch />
-                    </span>
-                  </summary>
-                </details>
-
-                <details className="overflow-hidden rounded border border-gray-300 [&_summary::-webkit-details-marker]:hidden">
-                  <summary className="flex cursor-pointer items-center justify-between gap-2 bg-white p-4 text-gray-900 transition">
-                    <span className="text-sm font-medium"> Categoria </span>
-                    <span className="transition group-open:-rotate-180">
-                      <IoIosArrowForward />
-                    </span>
-                  </summary>
-
-                  <div className="border-t border-gray-200 bg-white">
-                    <ul className="space-y-1 border-t border-gray-200 p-4">
-                      {filter.categories.map((categ, index) => (
-                        <li key={index}>
-                          <label className="inline-flex items-center gap-2">
-                            <input 
-                              type="checkbox" 
-                              className="size-5 rounded border-gray-300" 
-                              onChange={() => handleCheckboxChange('category', categ.name)}
-                              checked={searchParams.get('category')?.split(',').includes(categ.name) || false}
-                            />
-                            <span className="text-sm font-medium text-gray-700">
-                              {`${categ.name} (${categ.count})`}
-                            </span>
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </details>
-
-                <details className="overflow-hidden rounded border border-gray-300 [&_summary::-webkit-details-marker]:hidden">
-                  <summary className="flex cursor-pointer items-center justify-between gap-2 bg-white p-4 text-gray-900 transition">
-                    <span className="text-sm font-medium"> Carroceria </span>
-                    <span className="transition group-open:-rotate-180">
-                      <IoIosArrowForward />
-                    </span>
-                  </summary>
-
-                  <div className="border-t border-gray-200 bg-white">
-                    <ul className="space-y-1 border-t border-gray-200 p-4">
-                      {filter.types.map((tp, index) => (
-                        <li key={index}>
-                          <label className="inline-flex items-center gap-2">
-                            <input 
-                              type="checkbox" 
-                              className="size-5 rounded border-gray-300" 
-                              onChange={() => handleCheckboxChange('type', tp.name)}
-                              checked={searchParams.get('type')?.split(',').includes(tp.name) || false}
-                            />
-                            <span className="text-sm font-medium text-gray-700">
-                              {`${tp.name} (${tp.count})`}
-                            </span>
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </details>
-
-              </div>
+    <main className="container mx-auto p-4 flex flex-col">
+      <section className="w-full flex justify-center p-4 mx-auto">
+        <form
+          className="flex flex-col items-center justify-center w-full space-y-4 md:flex-row md:space-y-0 md:space-x-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch();
+          }}
+        >
+          <div className="relative w-full flex flex-col gap-4 items-center md:flex-row">
+            <div className="w-full flex items-center relative">
+              <svg
+                className="absolute left-3 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                type="text"
+                name="search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="md:min-w-96 w-full p-3 pl-12 rounded-lg border shadow-md outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                placeholder="Search by name, type, manufacturer, etc"
+              />
             </div>
+
+            <select
+              id="manufacturer"
+              className="w-full xl:max-w-48 p-3 rounded-lg shadow-md border outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              value={selectedCategory}
+            >
+              <option value="">Categoria</option>
+              {filter.categories.map((categ, index) => (
+                <option key={index} value={categ.name}>
+                  {`${categ.name} (${categ.count})`}
+                </option>
+              ))}
+            </select>
+
+            <select
+              id="category"
+              className="w-full p-3 xl:max-w-48 rounded-lg shadow-md border outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              onChange={(e) => setSelectedType(e.target.value)}
+              value={selectedType}
+            >
+              <option value="">Carroceria</option>
+              {filter.types.map((tp, index) => (
+                <option key={index} value={tp.name}>
+                  {`${tp.name} (${tp.count})`}
+                </option>
+              ))}
+            </select>
           </div>
+          <button
+            type="submit"
+            className="w-full flex gap-2 md:w-auto px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Search
+          </button>
+        </form>
+      </section>
 
-          <div className='flex flex-col'>
-            <div className="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-              {cars.length > 0 ? (
-                cars.map((car) => (
-                  <CarSimpleCard car={car}/>
-                ))
-              ) : (
-                <p className="text-center col-span-full">Nenhum carro disponível no momento.</p>
-              )}
-            </div>
-            <p>resultados {totalResults}</p>
-            <nav>
-              <ol className="flex justify-center gap-1 text-xs font-medium">
-                <li>
-                  <a
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    className="inline-flex size-8 items-center justify-center rounded border border-gray-100 hover:bg-gray-200 bg-white text-gray-900 rtl:rotate-180 cursor-pointer"
-                  >
-                    <span className="sr-only">Prev Page</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="size-3"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </a>
-                </li>
-
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <li key={index + 1}>
-                    <a
-                      onClick={() => setCurrentPage(index + 1)}
-                      className={`block size-8 rounded border ${currentPage === index + 1 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-100 hover:bg-gray-200 bg-white text-gray-900'} text-center leading-8 cursor-pointer`}
-                    >
-                      {index + 1}
-                    </a>
-                  </li>
-                ))}
-
-                <li>
-                  <a
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                    className="inline-flex size-8 items-center justify-center rounded border border-gray-100 hover:bg-gray-200 bg-white text-gray-900 rtl:rotate-180 cursor-pointer"
-                  >
-                    <span className="sr-only">Next Page</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="size-3"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </a>
-                </li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-      </main>
-    </>
+      <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 sm:gap-2 md:gap-4">
+        {cars.length > 0 ? (
+          cars.map((car) => (
+            <CarSimpleCard key={car.id} car={car} />
+          ))
+        ) : (
+          <p className="text-center col-span-full">Nenhum carro disponível no momento.</p>
+        )}
+      </div>
+    </main>
   );
 };
 
