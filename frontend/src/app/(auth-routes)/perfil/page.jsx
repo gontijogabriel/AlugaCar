@@ -1,7 +1,5 @@
 'use client';
 import { useSession } from 'next-auth/react';
-import Header from "@/components/Header";
-import Link from "next/link";
 import { useEffect, useState } from 'react';
 import Loading from '@/components/Loading';
 
@@ -60,10 +58,9 @@ const Perfil = () => {
 
 	return (
 		<>
-			<Header />
 			<main className="container mx-auto px-0 lg:px-8">
 
-				<section class="bg-white py-4 antialiased dark:bg-gray-900">
+				<section class="py-4 antialiased dark:bg-gray-900">
 					<div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
 						<div class="mx-auto max-w-5xl">
 
@@ -73,7 +70,7 @@ const Perfil = () => {
 								<div class="divide-y divide-gray-200 dark:divide-gray-700 flex flex-col gap-2">
 
 									{rentals.map((rental) => (
-										<div class="flex flex-wrap items-center gap-y-4 p-2 bg-neutral-100 rounded-md shadow-m" key={rental.id}>
+										<div class="flex flex-wrap items-center gap-y-4 p-2 bg-gray-100 rounded-md" key={rental.id}>
 											<dl class="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
 												<dt class="text-base font-medium text-gray-500 dark:text-gray-400">Carro</dt>
 												<dd class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
