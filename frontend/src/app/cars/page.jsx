@@ -1,13 +1,10 @@
 'use client';
 
-import Header from '@/components/Header';
 import Loading from '@/components/Loading';
 import { useEffect, useState } from 'react';
 import { getCarDataFilters, getCars } from '@/services/api';
-
 import { useSearchParams, useRouter } from 'next/navigation';
 import { IoIosArrowForward, IoIosSearch } from 'react-icons/io';
-import Footer from '@/components/Footer';
 import CarSimpleCard from '@/components/CarSimpleCard';
 
 const Cars = () => {
@@ -87,162 +84,153 @@ const Cars = () => {
   }
 
   return (
-    <>
       <main className="container mx-auto px-4 lg:px-8 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-1/4 lg:max-w-56">
-            <div className="block rounded-md overflow-hidden">
-              <div className="space-y-2">
+        
+        <section className="flex flex-wrap gap-4 mb-6 justify-end">
+          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 w-full sm:w-auto">
+            <input
+              type="text"
+              className="text-sm font-medium outline-none w-full"
+              placeholder="Pesquisar"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <span className="ml-2 cursor-pointer" onClick={handleSearch}>
+              <IoIosSearch color='grey' />
+            </span>
+          </div>
 
-                <details className="overflow-hidden rounded border border-gray-300">
-                  <summary className="flex items-center justify-between gap-2 p-4 text-gray-900 transition">
-                    <input 
-                      type="text" 
-                      className="text-sm font-medium outline-none" 
-                      placeholder="Pesquisar"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <span className="transition group-open:-rotate-180 cursor-pointer" onClick={handleSearch}>
-                      <IoIosSearch />
-                    </span>
-                  </summary>
-                </details>
-
-                <details className="overflow-hidden rounded border border-gray-300 [&_summary::-webkit-details-marker]:hidden">
-                  <summary className="flex cursor-pointer items-center justify-between gap-2 bg-white p-4 text-gray-900 transition">
-                    <span className="text-sm font-medium"> Categoria </span>
-                    <span className="transition group-open:-rotate-180">
-                      <IoIosArrowForward />
-                    </span>
-                  </summary>
-
-                  <div className="border-t border-gray-200 bg-white">
-                    <ul className="space-y-1 border-t border-gray-200 p-4">
-                      {filter.categories.map((categ, index) => (
-                        <li key={index}>
-                          <label className="inline-flex items-center gap-2">
-                            <input 
-                              type="checkbox" 
-                              className="size-5 rounded border-gray-300" 
-                              onChange={() => handleCheckboxChange('category', categ.name)}
-                              checked={searchParams.get('category')?.split(',').includes(categ.name) || false}
-                            />
-                            <span className="text-sm font-medium text-gray-700">
-                              {`${categ.name} (${categ.count})`}
-                            </span>
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </details>
-
-                <details className="overflow-hidden rounded border border-gray-300 [&_summary::-webkit-details-marker]:hidden">
-                  <summary className="flex cursor-pointer items-center justify-between gap-2 bg-white p-4 text-gray-900 transition">
-                    <span className="text-sm font-medium"> Carroceria </span>
-                    <span className="transition group-open:-rotate-180">
-                      <IoIosArrowForward />
-                    </span>
-                  </summary>
-
-                  <div className="border-t border-gray-200 bg-white">
-                    <ul className="space-y-1 border-t border-gray-200 p-4">
-                      {filter.types.map((tp, index) => (
-                        <li key={index}>
-                          <label className="inline-flex items-center gap-2">
-                            <input 
-                              type="checkbox" 
-                              className="size-5 rounded border-gray-300" 
-                              onChange={() => handleCheckboxChange('type', tp.name)}
-                              checked={searchParams.get('type')?.split(',').includes(tp.name) || false}
-                            />
-                            <span className="text-sm font-medium text-gray-700">
-                              {`${tp.name} (${tp.count})`}
-                            </span>
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </details>
-
+          <div className='flex flex-wrap gap-4 w-full sm:w-auto justify-center sm:justify-end'>
+            <details className="relative flex items-center border border-gray-300 rounded-md p-2 cursor-pointer w-full sm:w-auto">
+              <summary className="flex items-center gap-2 w-full sm:w-auto">
+                <span className="text-sm font-medium">Categoria</span>
+                <IoIosArrowForward className="transition-transform rotate-0 group-open:rotate-90" />
+              </summary>
+              <div className="absolute left-0 top-10 mt-2 w-full sm:w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
+                <ul className="space-y-1">
+                  {filter.categories.map((categ, index) => (
+                    <li key={index}>
+                      <label className="inline-flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300"
+                          onChange={() => handleCheckboxChange('category', categ.name)}
+                          checked={searchParams.get('category')?.split(',').includes(categ.name) || false}
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {`${categ.name} (${categ.count})`}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
+            </details>
+
+            <details className="relative flex items-center border border-gray-300 rounded-md p-2 cursor-pointer w-full sm:w-auto">
+              <summary className="flex items-center gap-2 w-full sm:w-auto">
+                <span className="text-sm font-medium">Carroceria</span>
+                <IoIosArrowForward className="transition-transform rotate-0 group-open:rotate-90" />
+              </summary>
+              <div className="absolute left-0 top-10 mt-2 w-full sm:w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
+                <ul className="space-y-1">
+                  {filter.types.map((tp, index) => (
+                    <li key={index}>
+                      <label className="inline-flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300"
+                          onChange={() => handleCheckboxChange('type', tp.name)}
+                          checked={searchParams.get('type')?.split(',').includes(tp.name) || false}
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {`${tp.name} (${tp.count})`}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
           </div>
+        </section>
 
-          <div className='flex flex-col'>
-            <div className="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-              {cars.length > 0 ? (
-                cars.map((car) => (
-                  <CarSimpleCard car={car}/>
-                ))
-              ) : (
-                <p className="text-center col-span-full">Nenhum carro disponível no momento.</p>
-              )}
-            </div>
-            <p>resultados {totalResults}</p>
-            <nav>
-              <ol className="flex justify-center gap-1 text-xs font-medium">
-                <li>
-                  <a
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    className="inline-flex size-8 items-center justify-center rounded border border-gray-100 hover:bg-gray-200 bg-white text-gray-900 rtl:rotate-180 cursor-pointer"
-                  >
-                    <span className="sr-only">Prev Page</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="size-3"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </a>
-                </li>
-
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <li key={index + 1}>
-                    <a
-                      onClick={() => setCurrentPage(index + 1)}
-                      className={`block size-8 rounded border ${currentPage === index + 1 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-100 hover:bg-gray-200 bg-white text-gray-900'} text-center leading-8 cursor-pointer`}
-                    >
-                      {index + 1}
-                    </a>
-                  </li>
-                ))}
-
-                <li>
-                  <a
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                    className="inline-flex size-8 items-center justify-center rounded border border-gray-100 hover:bg-gray-200 bg-white text-gray-900 rtl:rotate-180 cursor-pointer"
-                  >
-                    <span className="sr-only">Next Page</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="size-3"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </a>
-                </li>
-              </ol>
-            </nav>
-          </div>
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+          {cars.length > 0 ? (
+            cars.map((car, index) => (
+              <CarSimpleCard key={index} car={car} />
+            ))
+          ) : (
+            <p className="text-center col-span-full text-gray-500 italic font-semibold mt-4 p-4">
+              Nenhum carro disponível no momento.
+            </p>
+          )}
+        </section>
+        
+        <div className='text-right'>
+          <span className="text-xs text-gray-600 text-right">
+            Resultados encontrados {totalResults}
+          </span>
         </div>
+
+        <nav className="mt-2">
+          <ol className="flex justify-center gap-1 text-xs font-medium">
+            <li>
+              <a
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                className="inline-flex size-8 items-center justify-center rounded border border-gray-100 hover:bg-gray-200 bg-white text-gray-900 rtl:rotate-180 cursor-pointer"
+              >
+                <span className="sr-only">Prev Page</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="size-3"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </a>
+            </li>
+
+            {Array.from({ length: totalPages }, (_, index) => (
+              <li key={index + 1}>
+                <a
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`block size-8 rounded border ${currentPage === index + 1 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-100 hover:bg-gray-200 bg-white text-gray-900'} text-center leading-8 cursor-pointer`}
+                >
+                  {index + 1}
+                </a>
+              </li>
+            ))}
+
+            <li>
+              <a
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                className="inline-flex size-8 items-center justify-center rounded border border-gray-100 hover:bg-gray-200 bg-white text-gray-900 rtl:rotate-180 cursor-pointer"
+              >
+                <span className="sr-only">Next Page</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="size-3"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </a>
+            </li>
+          </ol>
+        </nav>
+
       </main>
-    </>
   );
 };
 

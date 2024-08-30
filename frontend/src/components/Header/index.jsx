@@ -15,7 +15,7 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow">
-      <nav aria-label="Global" className="max-w-7xl mx-auto flex items-center justify-between p-6 lg:px-8">
+      <nav aria-label="Global" className="max-w-1920 mx-auto flex items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900">
