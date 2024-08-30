@@ -142,12 +142,6 @@ const Footer = () => {
                                         </div>
                                     </a>
                                 </div>
-                                <div className="relative w-36">
-                                    <div className="text-xs lg:text-sm focus:outline-none dark:bg-gray-900 dark:text-gray-50 text-gray-800 appearance-none rounded-full bg-gray-100 w-full px-4 py-2">
-                                        dark mode
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                     </div>

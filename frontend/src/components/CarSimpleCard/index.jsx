@@ -1,13 +1,18 @@
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
+const CarSimpleCard = ({ car }) => {
+    const router = useRouter()
 
-const CarSimpleCard = ({car}) => {
+    const toLink = (carId) => {
+        router.push(`/cars/detail/${carId}`);
+    }
 
     return (
-        <Link
-            href={`cars/detail/${car.id}`}
+        <div
+            onClick={() => toLink(car.id)}
             key={car.id}
-            className="block border-gray-300 rounded-md overflow-hidden shadow-md transition-transform transform hover:scale-105 bg-white"
+            className="block border-gray-300 rounded-md overflow-hidden shadow-md transition-transform transform hover:scale-105 bg-white cursor-pointer"
         >
             <img
                 src={car.image.url}
@@ -19,7 +24,7 @@ const CarSimpleCard = ({car}) => {
                 <p className="text-gray-600 mb-1">{car.brand}</p>
                 <p className="text-gray-600">R$ {car.day_price} / dia</p>
             </div>
-        </Link>
+        </div>
     )
 }
 
