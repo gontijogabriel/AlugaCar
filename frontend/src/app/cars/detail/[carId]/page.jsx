@@ -97,13 +97,6 @@ const CarDetailsPage = ({ params }) => {
 
   return (
     <main className="container mx-auto px-4 lg:px-8 py-6">
-      <nav aria-label="breadcrumb">
-        <ol className="flex leading-none text-indigo-600 divide-x divide-indigo-400 mb-4">
-          <li className="pr-4"><a href="/">Home</a></li>
-          <li className="px-4"><a href="/cars">Carros</a></li>
-          <li className="px-4 text-gray-700" aria-current="page">{carDetails.model}</li>
-        </ol>
-      </nav>
 
       <h1 className="text-4xl font-bold mb-4 text-gray-800">{carDetails.model}</h1>
       <div className="flex flex-col lg:flex-row gap-6">
