@@ -15,52 +15,55 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow">
-      <nav aria-label="Global" className="max-w-1920 mx-auto flex items-center justify-between p-6 lg:px-8">
-        <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5">
-            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900">
-              <span className="sr-only">Home</span>
-              Aluga<span className="text-blue-600">Car</span>
-            </h1>
-          </Link>
-        </div>
-        <div className="flex lg:hidden">
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-          >
-            <span className="sr-only">Open main menu</span>
-            <MdMenu className="h-6 w-6" />
-          </button>
-        </div>
-        <div className="hidden lg:flex lg:gap-x-12">
-          <Link href="/" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">Home</Link>
-          <Link href="/cars" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">Cars</Link>
-          <Link href="/about" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">About</Link>
-          {session && <Link href="/perfil" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">My Account</Link>}
-        </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {session ? (
+      {/* Container para alinhar o conteúdo */}
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+        <nav aria-label="Global" className="flex items-center justify-between py-4">
+          <div className="flex lg:flex-1">
+            <Link href="/" className="-m-1.5 p-1.5">
+              <h1 className="text-4xl sm:text-5xl font-bold text-gray-900">
+                <span className="sr-only">Home</span>
+                Aluga<span className="text-blue-600">Car</span>
+              </h1>
+            </Link>
+          </div>
+          <div className="flex lg:hidden">
             <button
-              onClick={handleSignOut}
-              className="text-sm font-semibold leading-6 text-gray-900 flex items-center hover:text-gray-700"
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
             >
-              <MdLogout className="mr-2" />
-              Sign out
+              <span className="sr-only">Open main menu</span>
+              <MdMenu className="h-6 w-6" />
             </button>
-          ) : (
-            <div className="flex gap-4 items-center">
-              <Link href="/auth/register" className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700">
-                Register
-              </Link>
-              <Link href="/auth/login" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">
-                Log in <span aria-hidden="true">&rarr;</span>
-              </Link>
-            </div>
-          )}
-        </div>
-      </nav>
+          </div>
+          <div className="hidden lg:flex lg:gap-x-12">
+            <Link href="/" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">Home</Link>
+            <Link href="/cars" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">Cars</Link>
+            <Link href="/about" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">About</Link>
+            {session && <Link href="/perfil" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">My Account</Link>}
+          </div>
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+            {session ? (
+              <button
+                onClick={handleSignOut}
+                className="text-sm font-semibold leading-6 text-gray-900 flex items-center hover:text-gray-700"
+              >
+                <MdLogout className="mr-2" />
+                Sign out
+              </button>
+            ) : (
+              <div className="flex gap-4 items-center">
+                <Link href="/auth/register" className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700">
+                  Register
+                </Link>
+                <Link href="/auth/login" className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">
+                  Log in <span aria-hidden="true">&rarr;</span>
+                </Link>
+              </div>
+            )}
+          </div>
+        </nav>
+      </div>
 
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-10">
