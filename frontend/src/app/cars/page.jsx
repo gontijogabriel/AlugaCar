@@ -1,7 +1,7 @@
 'use client';
 
 import Loading from '@/components/Loading';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { getCarDataFilters, getCars } from '@/services/api';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { IoIosArrowForward, IoIosSearch } from 'react-icons/io';
@@ -17,9 +17,13 @@ const Cars = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedType, setSelectedType] = useState('');
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isTypeOpen, setIsTypeOpen] = useState(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
+  const categoryRef = useRef(null);
+  const typeRef = useRef(null);
 
   useEffect(() => {
     const fetchFilter = async () => {
@@ -52,22 +56,67 @@ const Cars = () => {
     fetchCars();
   }, [searchParams, currentPage]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+        setIsCategoryOpen(false);
+      }
+      if (typeRef.current && !typeRef.current.contains(event.target)) {
+        setIsTypeOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleCheckboxChange = (filterType, value) => {
+    const currentValues = searchParams.get(filterType)?.split(',') || [];
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter((item) => item !== value)
+      : [...currentValues, value];
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (newValues.length > 0) {
+      params.set(filterType, newValues.join(','));
+    } else {
+      params.delete(filterType);
+    }
+
+    router.push(`?${params.toString()}`);
+  };
+
   const handleSearch = () => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
 
     if (searchTerm) {
       params.set('search', searchTerm);
+    } else {
+      params.delete('search');
     }
 
     if (selectedCategory) {
       params.set('category', selectedCategory);
+    } else {
+      params.delete('category');
     }
 
     if (selectedType) {
       params.set('type', selectedType);
+    } else {
+      params.delete('type');
     }
 
     router.push(`?${params.toString()}`);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   if (loading) {
@@ -84,6 +133,7 @@ const Cars = () => {
             placeholder="Pesquisar"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown} // Adicionado para capturar o evento Enter
           />
           <span className="ml-2 cursor-pointer" onClick={handleSearch}>
             <IoIosSearch color='grey' />
@@ -91,57 +141,67 @@ const Cars = () => {
         </div>
 
         <div className='flex flex-wrap gap-4 w-full sm:w-auto justify-center sm:justify-end'>
-          <details className="relative flex items-center border border-gray-300 rounded-md p-2 cursor-pointer w-full sm:w-auto">
-            <summary className="flex items-center gap-2 w-full sm:w-auto">
+          <div ref={categoryRef} className="relative">
+            <div 
+              onClick={() => setIsCategoryOpen(!isCategoryOpen)} 
+              className="flex items-center border border-gray-300 rounded-md p-2 cursor-pointer w-full sm:w-auto"
+            >
               <span className="text-sm font-medium">Categoria</span>
-              <IoIosArrowForward className="transition-transform rotate-0 group-open:rotate-90" />
-            </summary>
-            <div className="absolute left-0 top-10 mt-2 w-full sm:w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
-              <ul className="space-y-1">
-                {filter.categories.map((categ, index) => (
-                  <li key={index}>
-                    <label className="inline-flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300"
-                        onChange={() => handleCheckboxChange('category', categ.name)}
-                        checked={searchParams.get('category')?.split(',').includes(categ.name) || false}
-                      />
-                      <span className="text-sm font-medium text-gray-700">
-                        {`${categ.name} (${categ.count})`}
-                      </span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
+              <IoIosArrowForward className={`transition-transform ${isCategoryOpen ? 'rotate-90' : 'rotate-0'}`} />
             </div>
-          </details>
+            {isCategoryOpen && (
+              <div className="absolute left-0 top-10 mt-2 w-full sm:w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
+                <ul className="space-y-1">
+                  {filter.categories.map((categ, index) => (
+                    <li key={index}>
+                      <label className="inline-flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300"
+                          onChange={() => handleCheckboxChange('category', categ.name)}
+                          checked={searchParams.get('category')?.split(',').includes(categ.name) || false}
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {`${categ.name} (${categ.count})`}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
 
-          <details className="relative flex items-center border border-gray-300 rounded-md p-2 cursor-pointer w-full sm:w-auto">
-            <summary className="flex items-center gap-2 w-full sm:w-auto">
+          <div ref={typeRef} className="relative">
+            <div 
+              onClick={() => setIsTypeOpen(!isTypeOpen)} 
+              className="flex items-center border border-gray-300 rounded-md p-2 cursor-pointer w-full sm:w-auto"
+            >
               <span className="text-sm font-medium">Carroceria</span>
-              <IoIosArrowForward className="transition-transform rotate-0 group-open:rotate-90" />
-            </summary>
-            <div className="absolute left-0 top-10 mt-2 w-full sm:w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
-              <ul className="space-y-1">
-                {filter.types.map((tp, index) => (
-                  <li key={index}>
-                    <label className="inline-flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300"
-                        onChange={() => handleCheckboxChange('type', tp.name)}
-                        checked={searchParams.get('type')?.split(',').includes(tp.name) || false}
-                      />
-                      <span className="text-sm font-medium text-gray-700">
-                        {`${tp.name} (${tp.count})`}
-                      </span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
+              <IoIosArrowForward className={`transition-transform ${isTypeOpen ? 'rotate-90' : 'rotate-0'}`} />
             </div>
-          </details>
+            {isTypeOpen && (
+              <div className="absolute left-0 top-10 mt-2 w-full sm:w-40 bg-white border border-gray-200 rounded-md shadow-lg p-4 z-10">
+                <ul className="space-y-1">
+                  {filter.types.map((tp, index) => (
+                    <li key={index}>
+                      <label className="inline-flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300"
+                          onChange={() => handleCheckboxChange('type', tp.name)}
+                          checked={searchParams.get('type')?.split(',').includes(tp.name) || false}
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {`${tp.name} (${tp.count})`}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
